@@ -1,8 +1,6 @@
 import argparse
 import os
 from .app import server
-from starlette.middleware import Middleware
-from starlette.middleware.cors import CORSMiddleware
 
 transport=os.getenv("TRANSPORT", "stdio")
 port=os.getenv("PORT", 8000)
@@ -20,21 +18,42 @@ def main():
     args = parser.parse_args()
     if args.transport == "http":
         import uvicorn
+        from mcp.server.transport_security import TransportSecuritySettings
+        from starlette.middleware.cors import CORSMiddleware
 
-        # Define middleware
-        middleware = [
-            Middleware(
-                CORSMiddleware,
-                allow_origins=["*"],
-                allow_methods=["*"],
-                allow_headers=["*"],
+        # Configure ALLOWED_HOSTS if provided
+        allowed_hosts = os.getenv("ALLOWED_HOSTS")
+        if allowed_hosts:
+            server.settings.transport_security = TransportSecuritySettings(
+                enable_dns_rebinding_protection=True,
+                allowed_hosts=allowed_hosts.split(","),
             )
-        ]
+        else:
+            # Disable DNS rebinding protection if no ALLOWED_HOSTS provided
+            # and we're running on 0.0.0.0 (FastMCP default for non-localhost)
+            server.settings.transport_security = TransportSecuritySettings(
+                enable_dns_rebinding_protection=False
+            )
 
-        # Create ASGI app with middleware
-        http_app = server.streamable_http_app(middleware=middleware)
+        # Create ASGI app
+        http_app = server.streamable_http_app()
         
-        uvicorn.run(http_app, host="0.0.0.0", port=args.port, log_level="info")
+        # Add middleware to the Starlette app
+        http_app.add_middleware(
+            CORSMiddleware,
+            allow_origins=["*"],
+            allow_methods=["*"],
+            allow_headers=["*"],
+        )
+        
+        uvicorn.run(
+            http_app,
+            host="0.0.0.0",
+            port=args.port,
+            log_level="info",
+            proxy_headers=True,
+            forwarded_allow_ips="*",
+        )
     else:
         server.run(transport=args.transport)
 

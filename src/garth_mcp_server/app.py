@@ -19,6 +19,7 @@ garth.DailySteps = PatchedDailySteps
 
 server = FastMCP(
     "Garth - Garmin Connect",
+    host="0.0.0.0",
 )
 
 @server.custom_route("/health", methods=["GET"])
