@@ -1,6 +1,5 @@
 import argparse
 import os
-import logger
 from .app import server
 
 transport=os.getenv("TRANSPORT", "stdio")
@@ -17,7 +16,6 @@ def main():
     parser.add_argument("--port", type=int, default=port, help="Port for HTTP transport")
 
     args = parser.parse_args()
-    logger.debug(f"Transport: {args.transport}, Port: {args.port}")
     if args.transport == "http":
         import uvicorn
 
