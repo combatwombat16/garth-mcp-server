@@ -2,6 +2,7 @@ from typing import ClassVar
 from mcp.server.fastmcp import FastMCP
 import garth.stats.steps
 from pydantic.dataclasses import dataclass
+from starlette.responses import JSONResponse
 
 # Monkey-patch garth.DailySteps to handle cases where Garmin returns null for step_goal
 @dataclass
@@ -16,14 +17,11 @@ class PatchedDailySteps(garth.stats.steps.Stats):
 garth.stats.steps.DailySteps = PatchedDailySteps
 garth.DailySteps = PatchedDailySteps
 
-from starlette.responses import JSONResponse
-
 server = FastMCP(
     "Garth - Garmin Connect",
-    transport_security=TransportSecuritySettings(
-        enable_dns_rebinding_protection=False,
-    )
 )
+
+
 
 @server.custom_route("/health", methods=["GET"])
 async def health(request):
