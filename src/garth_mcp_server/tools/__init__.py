@@ -1,1 +1,1 @@
-from . import user, activities, wellness, devices, system  # noqa: F401
+from . import user, activities, wellness, devices, system, auth_tools  # noqa: F401

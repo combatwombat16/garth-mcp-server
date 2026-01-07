@@ -14,8 +14,8 @@ def requires_garth_session(func):
             email = os.getenv("GARMIN_EMAIL")
             password = os.getenv("GARMIN_PASSWORD")
             if email and password:
-                # Only login if not already authenticated in this session
-                if not garth.client.username:
+                # Only login if not already authenticated with OAuth1
+                if not garth.client.oauth1_token:
                     try:
                         garth.login(email, password)
                     except Exception as e:

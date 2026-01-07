@@ -13,6 +13,7 @@ garth = "^0.5.14"
 mcp = {extras = ["fastmcp"], version = "^1.1.2"}
 uvicorn = "^0.34.0"
 starlette = "^0.45.2"
+python-dotenv = "^1.0.1"
 
 [tool.poetry.group.dev.dependencies]
 ipython = "*"
