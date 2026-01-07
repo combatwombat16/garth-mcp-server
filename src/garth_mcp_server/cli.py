@@ -1,4 +1,5 @@
 import argparse
+import os
 
 from .app import server
 
@@ -8,10 +9,10 @@ def main():
     parser.add_argument(
         "--transport",
         choices=["stdio", "http"],
-        default="stdio",
+        default=os.getenv("TRANSPORT", "stdio"),
         help="Transport to use (stdio or http)",
     )
-    parser.add_argument("--port", type=int, default=8000, help="Port for HTTP transport")
+    parser.add_argument("--port", type=int, default=os.getenv("PORT", 8000), help="Port for HTTP transport")
 
     args = parser.parse_args()
 
