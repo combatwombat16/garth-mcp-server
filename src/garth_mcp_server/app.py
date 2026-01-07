@@ -21,8 +21,6 @@ server = FastMCP(
     "Garth - Garmin Connect",
 )
 
-
-
 @server.custom_route("/health", methods=["GET"])
 async def health(request):
     return JSONResponse({"status": "ok"})
