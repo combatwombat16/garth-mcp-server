@@ -16,4 +16,10 @@ class PatchedDailySteps(garth.stats.steps.Stats):
 garth.stats.steps.DailySteps = PatchedDailySteps
 garth.DailySteps = PatchedDailySteps
 
+from starlette.responses import JSONResponse
+
 server = FastMCP("Garth - Garmin Connect")
+
+@server.custom_route("/health", methods=["GET"])
+async def health(request):
+    return JSONResponse({"status": "ok"})
